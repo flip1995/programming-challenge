@@ -2,7 +2,9 @@ package de.exxcellent.challenge.data_classes;
 
 import com.opencsv.bean.CsvBindByName;
 
-public class Weather {
+import de.exxcellent.challenge.queries.Diff;
+
+public class Weather implements Diff<Weather> {
     @CsvBindByName(column = "Day")
     private Integer day;
     @CsvBindByName(column = "MxT")
@@ -10,8 +12,16 @@ public class Weather {
     @CsvBindByName(column = "MnT")
     private Integer min_temp;
 
-    public Integer temp_diff() {
-        return this.max_temp - this.min_temp;
+    @Override
+    public int cmp_diff(Weather other) {
+        Integer this_diff = this.max_temp - this.min_temp;
+        Integer other_diff = other.max_temp - other.min_temp;
+        if (this_diff < other_diff)
+            return -1;
+        else if (this_diff == other_diff)
+            return 0;
+        else
+            return 1;
     }
 
     public Integer getDay() {
