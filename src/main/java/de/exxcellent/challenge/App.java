@@ -3,6 +3,7 @@ package de.exxcellent.challenge;
 import de.exxcellent.challenge.parser.CSVParser;
 import de.exxcellent.challenge.parser.Parser;
 
+import java.io.IOException;
 import java.util.Iterator;
 
 import de.exxcellent.challenge.data_classes.Weather;
@@ -27,22 +28,13 @@ public final class App {
 
         DataContainer<Weather> data = new DataContainer<>(iter);
 
-        Weather min = data.next();
-
-        while (data.hasNext()) {
-            Weather next = data.next();
-
-            if (next.temp_diff() < min.temp_diff())
-                min = next;
-
-            System.out.println(next.getDay());
+        try {
+            Weather weather = data.smallest_diff();
+            Integer dayWithSmallestTempSpread = weather.getDay();
+            System.out.println("Day with smallest temperature spread : " + dayWithSmallestTempSpread); 
+        } catch(IOException e) {
+            System.out.println(e);
         }
-        
-        if (min != null) {
-            int dayWithSmallestTempSpread = min.getDay();
-            System.out.println("Day with smallest temperature spread : " + dayWithSmallestTempSpread);
-        }
-
         // String teamWithSmallestGoalSpread = "A good team"; // Your goal analysis function call …
         // System.out.printf("Team with smallest goal spread       : %s%n", teamWithSmallestGoalSpread);
     }
