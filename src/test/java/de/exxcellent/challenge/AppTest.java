@@ -6,9 +6,11 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.util.Iterator;
 
+import de.exxcellent.challenge.data_classes.Football;
 import de.exxcellent.challenge.data_classes.Weather;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
@@ -19,6 +21,9 @@ public class AppTest {
 
     private Weather weather_low;
     private Weather weather_high;
+
+    private Football football_low;
+    private Football football_high;
 
     @BeforeEach
     public void setUp() {
@@ -31,11 +36,28 @@ public class AppTest {
         this.weather_high.setDay(1);
         this.weather_high.setMax_temp(10);
         this.weather_high.setMin_temp(0);
+
+        this.football_low = new Football();
+        this.football_low.setTeam("Loser");
+        this.football_low.setGoals(3);
+        this.football_low.setGoals_allowed(10); // -7
+
+        this.football_high = new Football();
+        this.football_high.setTeam("Winner");
+        this.football_high.setGoals(3);
+        this.football_high.setGoals_allowed(0); // +3
     }
 
     @Test
     public void weatherCmp() {
         assertTrue(this.weather_low.cmp_diff(this.weather_high) < 0);
+    }
+
+    @Test
+    public void footballCmp() {
+        assertTrue(this.football_low.cmp_diff(this.football_high) > 0);
+        this.football_low.setGoals(7); // diff -3 == +3 = diff football_high
+        assertEquals(this.football_low.cmp_diff(this.football_high), 0);
     }
 
     @Test
