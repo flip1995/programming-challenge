@@ -4,8 +4,8 @@ import de.exxcellent.challenge.parser.CSVParser;
 import de.exxcellent.challenge.parser.Parser;
 
 import java.io.IOException;
-import java.util.Iterator;
 
+import de.exxcellent.challenge.data_classes.Football;
 import de.exxcellent.challenge.data_classes.Weather;
 
 /**
@@ -15,27 +15,32 @@ import de.exxcellent.challenge.data_classes.Weather;
  * @author Benjamin Schmid <benjamin.schmid@exxcellent.de>
  */
 public final class App {
-    // private static final String football_csv = "src/main/resources/de/exxcellent/challenge/football.csv";
-    private static final String weather_csv = "src/main/resources/de/exxcellent/challenge/weather.csv";
+    private static final String FOOTBALL_CSV = "src/main/resources/de/exxcellent/challenge/football.csv";
+    private static final String WEATHER_CSV = "src/main/resources/de/exxcellent/challenge/weather.csv";
     /**
      * This is the main entry method of your program.
      * @param args The CLI arguments passed
      */
     public static void main(String... args) {
-        Parser<Weather> parser = new CSVParser<Weather>(weather_csv, Weather.class);
+        Parser<Weather> weather_parser = new CSVParser<>(WEATHER_CSV, Weather.class);
+        DataContainer<Weather> weather_data = new DataContainer<>(weather_parser.deserialize());
 
-        Iterator<Weather> iter =  parser.deserialize();
-
-        DataContainer<Weather> data = new DataContainer<>(iter);
+        Parser<Football> football_parser = new CSVParser<>(FOOTBALL_CSV, Football.class);
+        DataContainer<Football> football_data = new DataContainer<>(football_parser.deserialize());
 
         try {
-            Weather weather = data.smallest_diff();
-            Integer dayWithSmallestTempSpread = weather.getDay();
-            System.out.println("Day with smallest temperature spread : " + dayWithSmallestTempSpread); 
+            Weather weather = weather_data.smallest_diff();
+            Integer day = weather.getDay();
+            System.out.println("Day with smallest temperature spread : " + day);
         } catch(IOException e) {
             System.out.println(e);
         }
-        // String teamWithSmallestGoalSpread = "A good team"; // Your goal analysis function call …
-        // System.out.printf("Team with smallest goal spread       : %s%n", teamWithSmallestGoalSpread);
+        try {
+            Football football = football_data.smallest_diff();
+            String team = football.getTeam();
+            System.out.println("Team with smallest goal spread       : " + team);
+        } catch(IOException e) {
+            System.out.println(e);
+        }
     }
 }
